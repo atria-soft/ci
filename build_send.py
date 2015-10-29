@@ -25,12 +25,21 @@ parser.add_argument("-t", "--tag",    help="Tag to register the system 'Linux', 
                                       default="")
 parser.add_argument("-S", "--status", help="Build status 'START', 'OK', 'ERROR' or $?",
                                       default="")
+parser.add_argument("-i", "--id",     help="build ID (auto get env variable TRAVIS_BUILD_NUMBER)",
+                                      default="")
 ###################
 ## Choice 3      ##
 ###################
 parser.add_argument("--test",         help="test value (local server ...)",
                                       action="store_true")
 args = parser.parse_args()
+
+if args.status not in ['START', 'OK', 'ERROR']:
+	#print("ploppp : '" + str(args.status) + "'")
+	if args.status == "0":
+		args.status = 'OK'
+	else:
+		args.status = 'ERROR'
 
 if args.test == True:
 	args.url = 'http://127.0.0.1/build/inject.php'
@@ -42,6 +51,9 @@ if args.test == True:
 else:
 	if args.tag == "":
 		print("[NOTE] (local) not set '--tag' parameter ==> just stop")
+		if args.status == 'ERROR':
+			print("[NOTE] build error, stop travis ...")
+			exit(-3)
 		exit(0)
 	list_tag = ['Linux', 'MacOs', 'Windows', 'IOs', 'Android', 'Mingw']
 	if args.tag not in list_tag:
@@ -50,13 +62,6 @@ else:
 	if args.status == "":
 		print("[ERROR] (local) set '--status' parameter")
 		exit(-2)
-
-if args.status not in ['START', 'OK', 'ERROR']:
-	#print("ploppp : '" + str(args.status) + "'")
-	if args.status == "0":
-		args.status = 'OK'
-	else:
-		args.status = 'ERROR'
 
 # todo : check if repo is contituated with a "/" ...
 # if repo, sha1 and branch is not set, we try to get it with travis global environement variable :
@@ -75,18 +80,25 @@ if args.branch == "":
 	if args.branch == None:
 		args.branch = ""
 
+if args.id == "":
+	args.id = os.environ.get('TRAVIS_BUILD_NUMBER')
+	if args.id == None:
+		args.id = ""
+
 print("    url = " + args.url)
 print("    repo = " + args.repo)
 print("    sha1 = " + args.sha1)
 print("    branch = " + args.branch)
 print("    tag = " + args.tag)
 print("    status = " + args.status)
+print("    build id = " + args.id)
 
 data = urllib.urlencode({'REPO':args.repo,
                          'SHA1':args.sha1,
                          'LIB_BRANCH':args.branch,
                          'TAG':args.tag,
-                         'STATUS':args.status})
+                         'STATUS':args.status,
+                         'ID':args.id})
 
 req = urllib2.Request(args.url, data)
 response = urllib2.urlopen(req)
@@ -96,6 +108,10 @@ return_data = response.read()
 print return_data
 if return_data[:7] == "[ERROR]":
 	exit(-1)
+
+if args.status == 'ERROR':
+	print("[NOTE] build error, stop travis ...")
+	exit(-3)
 
 exit(0)
 

@@ -13,6 +13,9 @@ if (isset($_POST['REPO']) == FALSE) {
 if (isset($_POST['TAG']) == FALSE) {
 	die("[ERROR] Missing POST : 'TAG'");
 }
+if (isset($_POST['ID']) == FALSE) {
+	die("[ERROR] Missing POST : 'ID'");
+}
 if (isset($_POST['STATUS']) == FALSE) {
 	die("[ERROR] Missing POST : 'STATUS'");
 }
@@ -104,8 +107,9 @@ if ($idGroup <= -1) {
 	if (    $result == NULL
 	     || $result->num_rows == 0) {
 		// simply insert:
-		$sql = " INSERT INTO `BUILD_snapshot` (`id-group`, `".$_POST['TAG']."`)"
-		      ." VALUES ('".$idGroup."',"
+		$sql = " INSERT INTO `BUILD_snapshot` (`id-build`, `id-group`, `".$_POST['TAG']."`)"
+		      ." VALUES ('".$_POST['ID']."',"
+		      ."         '".$idGroup."',"
 		      ."         '".$_POST['STATUS']."')";
 		$result = $COVERAGE_bdd->query($sql);
 		if ($result == TRUE) {
