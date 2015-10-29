@@ -1,0 +1,42 @@
+## make sure nobody gets the htaccess files
+<Files ~ "^[\._]ht">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</Files>
+
+# option pour 1and1
+#AddType x-mapp-php5 .php
+#Options +FollowSymlinks
+
+# autoriser le .htaccess dans sites-availlable/default.conf
+# enable the mode rewrite in : "/etc/apache2/mods-available" a copier dans "/etc/apache2/mods-enabled"
+# sudo cp /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/
+# redemarrer apache : "sudo /etc/init.d/apache2 restart"
+# voir les logs : "cat /var/log/apache2/error.log"
+
+# charge la premiÃ¨re page : the start page is the Wiki with Acceuil...
+#ErrorDocument 401 erreur/401
+#ErrorDocument 403 erreur/403
+#ErrorDocument 404 erreur/404
+#ErrorDocument 414 erreur/414
+
+
+RewriteEngine On
+# si ce n'est pas un fichier
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# constitution d'une adresse : "user-name/repository.svg" to get tag or "user-name/repository" to view lib
+RewriteRule ^build/([a-zA-Z0-9\-_]*)\/([a-zA-Z0-9\-_]*).svg$      build_thumb.php?USER=$1&LIB_NAME=$2 [L,QSA]
+RewriteRule ^build/inject$                                        build_inject.php [L,QSA]
+
+RewriteRule ^coverage/([a-zA-Z0-9\-_]*)\/([a-zA-Z0-9\-_]*).svg$   coverage_thumb.php?USER=$1&LIB_NAME=$2 [L,QSA]
+RewriteRule ^coverage/inject$                                     coverage_inject.php [L,QSA]
+
+RewriteRule ^warning/([a-zA-Z0-9\-_]*)\/([a-zA-Z0-9\-_]*).svg$    warning_thumb.php?USER=$1&LIB_NAME=$2 [L,QSA]
+RewriteRule ^warning/inject$                                      warning_inject.php [L,QSA]
+
+RewriteRule ^test/([a-zA-Z0-9\-_]*)\/([a-zA-Z0-9\-_]*).svg$       test_thumb.php?USER=$1&LIB_NAME=$2 [L,QSA]
+RewriteRule ^test/inject$                                         test_inject.php [L,QSA]
+
+RewriteRule ^([a-zA-Z0-9\-_]*)\/([a-zA-Z0-9\-_]*)$                view.php?USER=$1&LIB_NAME=$2 [L,QSA]
