@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 ##
 ## @author Edouard DUPIN
 ##
@@ -42,7 +42,7 @@ if args.status not in ['START', 'OK', 'ERROR']:
 		args.status = 'ERROR'
 
 if args.test == True:
-	args.url = 'http://127.0.0.1/build/inject.php'
+	args.url = 'http://atria-soft.com/ci/build/inject'
 	args.repo = 'HeeroYui/test'
 	args.sha1 = ''
 	args.branch = 'master'
@@ -102,10 +102,10 @@ data = urllib.urlencode({'REPO':args.repo,
 
 req = urllib2.Request(args.url, data)
 response = urllib2.urlopen(req)
-#print response.geturl()
-#print response.info()
+#print(response.geturl())
+#print(response.info())
 return_data = response.read()
-print return_data
+print(return_data)
 if return_data[:7] == "[ERROR]":
 	exit(-1)
 

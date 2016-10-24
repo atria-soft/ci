@@ -115,7 +115,7 @@ if ($idGroup <= -1) {
 		if ($result == TRUE) {
 			echo("[OK] registered done (new entry)");
 		} else {
-			echo("[ERROR] Can not register in db ... (snapshot)");
+			echo("[ERROR] Can not register in db ... (snapshot 1)");
 		}
 	} else {
 		// try to update the curent values:
@@ -126,7 +126,7 @@ if ($idGroup <= -1) {
 		if ($result == TRUE) {
 			echo("[OK] registered done (update)");
 		} else {
-			echo("[ERROR] Can not register in db ... (snapshot)");
+			echo("[ERROR] Can not register in db ... (snapshot 2)");
 		}
 	}
 }

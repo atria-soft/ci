@@ -10,6 +10,36 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
+
+--
+-- Structure de la table `BUILD_list`
+--
+
+CREATE TABLE IF NOT EXISTS `BUILD_list` (
+  `id` int(11) NOT NULL,
+  `time` int(11) NOT NULL,
+  `id-group` int(32) NOT NULL,
+  `sha1` varchar(512) NOT NULL,
+  `tag` varchar(512) NOT NULL,
+  `status` enum('UNKNOW','START','ERROR','OK') NOT NULL DEFAULT 'UNKNOW'
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+
+--
+-- Structure de la table `BUILD_snapshot`
+--
+
+CREATE TABLE IF NOT EXISTS `BUILD_snapshot` (
+  `id-build` varchar(256) NOT NULL,
+  `id-group` int(11) NOT NULL DEFAULT '0',
+  `Linux` enum('UNKNOW','START','ERROR','OK') NOT NULL DEFAULT 'UNKNOW',
+  `Windows` enum('UNKNOW','START','ERROR','OK') NOT NULL DEFAULT 'UNKNOW',
+  `MacOs` enum('UNKNOW','START','ERROR','OK') NOT NULL DEFAULT 'UNKNOW',
+  `IOs` enum('UNKNOW','START','ERROR','OK') NOT NULL DEFAULT 'UNKNOW',
+  `Android` enum('UNKNOW','START','ERROR','OK') NOT NULL DEFAULT 'UNKNOW'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
 --
 -- Structure de la table `CI_group`
 --
