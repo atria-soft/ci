@@ -92,26 +92,28 @@ if ($result->num_rows > 0) {
 		errorSVG("To much value");
 	}
 	$row = $result->fetch_assoc();
+	if ($row['executable'] == 0) {
+		$coverage = 100;
+	} else {
+		$coverage = intval(100 * $row['executed'] / $row['executable']);
+	}
+	//some coverage value :
+	if ($coverage < 25 ) {
+		$color = "c11";
+	} else if ($coverage < 50 ) {
+		$color = "c1c";
+	} else if ($coverage < 75 ) {
+		$color = "c71";
+	} else {
+		$color = "4c1";
+	}
+	$coverage = ''.$coverage.'%';
 } else {
-	errorSVG("No Value");
+	//errorSVG("No Value");
+	$coverage = "---";
+	$color = "FF0";
 }
 
-if ($row['executable'] == 0) {
-	$coverage = 100;
-} else {
-	$coverage = intval(100 * $row['executed'] / $row['executable']);
-}
-
-//some coverage value :
-if ($coverage < 25 ) {
-	$color = "c11";
-} else if ($coverage < 50 ) {
-	$color = "c1c";
-} else if ($coverage < 75 ) {
-	$color = "c71";
-} else {
-	$color = "4c1";
-}
 
 echo('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20">');
 echo('	<linearGradient id="a" x2="0" y2="100%">');
@@ -125,8 +127,8 @@ echo('	<rect rx="3" width="120" height="20" fill="url(#a)"/>');
 echo('	<g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">');
 echo('		<text x="32" y="15" fill="#010101" fill-opacity=".3">coverage</text>');
 echo('		<text x="32" y="14">coverage</text>');
-echo('		<text x="92.5" y="15" fill="#010101" fill-opacity=".3">'.$coverage.'%</text>');
-echo('		<text x="92.5" y="14">'.$coverage.'%</text>');
+echo('		<text x="92.5" y="15" fill="#010101" fill-opacity=".3">'.$coverage.'</text>');
+echo('		<text x="92.5" y="14">'.$coverage.'</text>');
 echo('	</g>');
 echo('</svg>');
 

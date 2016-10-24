@@ -92,21 +92,21 @@ if ($result->num_rows > 0) {
 		errorSVG("To much value");
 	}
 	$row = $result->fetch_assoc();
+	$warningCount = $row['warning'] + $row['error'];
+	//some warningCount value :
+	if ($warningCount < 5 ) {
+		$color = "4c1";
+	} else if ($warningCount < 20 ) {
+		$color = "c71";
+	} else if ($warningCount < 50 ) {
+		$color = "c1c";
+	} else {
+		$color = "c11";
+	}
 } else {
-	errorSVG("No Value");
-}
-
-$warningCount = $row['warning'] + $row['error'];
-
-//some warningCount value :
-if ($warningCount < 5 ) {
-	$color = "4c1";
-} else if ($warningCount < 20 ) {
-	$color = "c71";
-} else if ($warningCount < 50 ) {
-	$color = "c1c";
-} else {
-	$color = "c11";
+	//errorSVG("No Value");
+	$warningCount = "---";
+	$color = "FF0";
 }
 
 echo('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20">');

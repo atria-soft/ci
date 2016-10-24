@@ -92,26 +92,28 @@ if ($result->num_rows > 0) {
 		errorSVG("To much value");
 	}
 	$row = $result->fetch_assoc();
+	if ($row['total'] == 0) {
+		$testRatio = 0;
+	} else {
+		$testRatio = intval(100 * $row['passed'] / $row['total']);
+	}
+	//some testRatio value :
+	if ($testRatio < 25 ) {
+		$color = "c11";
+	} else if ($testRatio < 50 ) {
+		$color = "c1c";
+	} else if ($testRatio < 100 ) {
+		$color = "c71";
+	} else {
+		$color = "4c1";
+	}
+	$testRatio = ''.$testRatio.'%';
 } else {
-	errorSVG("No Value");
+	//errorSVG("No Value");
+	$testRatio = "---";
+	$color = "FF0";
 }
 
-if ($row['total'] == 0) {
-	$testRatio = 0;
-} else {
-	$testRatio = intval(100 * $row['passed'] / $row['total']);
-}
-
-//some testRatio value :
-if ($testRatio < 25 ) {
-	$color = "c11";
-} else if ($testRatio < 50 ) {
-	$color = "c1c";
-} else if ($testRatio < 100 ) {
-	$color = "c71";
-} else {
-	$color = "4c1";
-}
 
 echo('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20">');
 echo('	<linearGradient id="a" x2="0" y2="100%">');
@@ -125,8 +127,8 @@ echo('	<rect rx="3" width="120" height="20" fill="url(#a)"/>');
 echo('	<g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">');
 echo('		<text x="32" y="15" fill="#010101" fill-opacity=".3">test</text>');
 echo('		<text x="32" y="14">test</text>');
-echo('		<text x="92.5" y="15" fill="#010101" fill-opacity=".3">'.$testRatio.'%</text>');
-echo('		<text x="92.5" y="14">'.$testRatio.'%</text>');
+echo('		<text x="92.5" y="15" fill="#010101" fill-opacity=".3">'.$testRatio.'</text>');
+echo('		<text x="92.5" y="14">'.$testRatio.'</text>');
 echo('	</g>');
 echo('</svg>');
 

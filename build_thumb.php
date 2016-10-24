@@ -77,11 +77,11 @@ if ($result->num_rows > 0) {
 		errorSVG("To much value");
 	}
 	$row = $result->fetch_assoc();
+	$status = $row[$tag];
 } else {
-	errorSVG("No Value");
+	$status = "---";
+	//errorSVG("No Value");
 }
-
-$status = $row[$tag];
 
 
 //some coverage value :
