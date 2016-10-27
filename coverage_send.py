@@ -10,6 +10,7 @@ import urllib, urllib2
 import sys
 import os
 import argparse
+import time
 
 
 parser = argparse.ArgumentParser()
@@ -104,9 +105,18 @@ data = urllib.urlencode({'REPO':args.repo,
                          'SHA1':args.sha1,
                          'LIB_BRANCH':args.branch,
                          'JSON_FILE':json_data})
-
-req = urllib2.Request(args.url, data)
-response = urllib2.urlopen(req)
+# I do this because my server is sometime down and need time to restart (return 408)
+send_done = 5
+while send_done >= 0:
+	send_done = send_done - 1
+	try:
+		req = urllib2.Request(args.url, data)
+		response = urllib2.urlopen(req)
+		send_done = -1
+	except urllib2.HTTPError:
+		print("An error occured (maybe on server or network ... 'urllib2.HTTPError: HTTP Error 408: Request Timeout' ")
+	if send_done >= 0:
+		time.sleep(5)
 #print response.geturl()
 #print response.info()
 return_data = response.read()
