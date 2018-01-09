@@ -78,7 +78,7 @@ else:
 if args.repo == "":
 	args.repo = os.environ.get('TRAVIS_REPO_SLUG')
 	if args.repo == None:
-		args.repo = os.environ.get('CI_PROJECT_NAME')
+		args.repo = os.environ.get('CI_PROJECT_PATH')
 		if args.repo == None:
 			print("[ERROR] (local) missing 'repo' parameter can not get travis env variable")
 			exit(-2)
