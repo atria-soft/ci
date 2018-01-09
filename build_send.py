@@ -50,6 +50,9 @@ if args.test == True:
 	args.tag = 'Windows'
 	args.status = 'START'
 else:
+	if     len(args.tag) >= len("build:")
+	   and args.tag[:6] == "build:":
+		args.tag = args.tag[6:]
 	if args.tag == "":
 		print("[NOTE] (local) not set '--tag' parameter ==> just stop")
 		if args.status == 'ERROR':
