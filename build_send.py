@@ -53,9 +53,15 @@ else:
 	if args.tag == "":
 		print("[NOTE] (local) not set '--tag' parameter ==> just stop")
 		if args.status == 'ERROR':
-			print("[NOTE] build error, stop travis ...")
+			print("[NOTE] build error, stop CI ...")
 			exit(-3)
 		exit(0)
+	if args.tag == "linux":
+		args.tag = 'Linux';
+	if args.tag == "windows":
+		args.tag = 'Windows';
+	if args.tag == "mac":
+		args.tag = 'MacOs';
 	list_tag = ['Linux', 'MacOs', 'Windows', 'IOs', 'Android', 'Mingw']
 	if args.tag not in list_tag:
 		print("[ERROR] (local) set '--tag' parameter: " + str(list_tag))
@@ -69,22 +75,30 @@ else:
 if args.repo == "":
 	args.repo = os.environ.get('TRAVIS_REPO_SLUG')
 	if args.repo == None:
-		print("[ERROR] (local) missing 'repo' parameter can not get travis env variable")
-		exit(-2)
+		args.repo = os.environ.get('CI_PROJECT_NAME')
+		if args.repo == None:
+			print("[ERROR] (local) missing 'repo' parameter can not get travis env variable")
+			exit(-2)
 if args.sha1 == "":
 	args.sha1 = os.environ.get('TRAVIS_COMMIT')
 	if args.sha1 == None:
-		args.sha1 = ""
+		args.sha1 = os.environ.get('CI_COMMIT_SHA')
+		if args.sha1 == None:
+			args.sha1 = ""
 
 if args.branch == "":
 	args.branch = os.environ.get('TRAVIS_BRANCH')
 	if args.branch == None:
-		args.branch = ""
+		args.branch = os.environ.get('CI_COMMIT_REF_NAME')
+		if args.branch == None:
+			args.branch = ""
 
 if args.id == "":
 	args.id = os.environ.get('TRAVIS_BUILD_NUMBER')
 	if args.id == None:
-		args.id = ""
+		args.id = os.environ.get('CI_JOB_ID')
+		if args.id == None:
+			args.id = ""
 
 print("    url = " + args.url)
 print("    repo = " + args.repo)
