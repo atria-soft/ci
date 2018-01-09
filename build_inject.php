@@ -83,12 +83,13 @@ if ($exist == FALSE) {
 if ($idGroup <= -1) {
 	echo("[ERROR] can not create or find group");
 } else {
-	$sql = " INSERT INTO `BUILD_list` (`time`, `id-group`, `sha1`, `tag`, `status`)"
+	$sql = " INSERT INTO `BUILD_list` (`time`, `id-group`, `sha1`, `tag`, `status`, `build-id`)"
 	      ." VALUES ('".time()."',"
 	      ."         '".$idGroup."',"
 	      ."         '".$_POST['SHA1']."',"
 	      ."         '".$_POST['TAG']."',"
-	      ."         '".$_POST['STATUS']."')";
+	      ."         '".$_POST['STATUS']."',"
+	      ."         '".$_POST['ID']."')";
 	//echo $sql;
 	$result = $COVERAGE_bdd->query($sql);
 	if ($result == FALSE) {

@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS `BUILD_list` (
   `id-group` int(32) NOT NULL,
   `sha1` varchar(512) NOT NULL,
   `tag` varchar(512) NOT NULL,
-  `status` enum('UNKNOW','START','ERROR','OK') NOT NULL DEFAULT 'UNKNOW'
+  `status` enum('UNKNOW','START','ERROR','OK') NOT NULL DEFAULT 'UNKNOW',
+  `build-id` int(32) NOT NULL
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 
