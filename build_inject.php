@@ -83,19 +83,20 @@ if ($exist == FALSE) {
 if ($idGroup <= -1) {
 	echo("[ERROR] can not create or find group");
 } else {
-	$sql = " INSERT INTO `BUILD_list` (`time`, `id-group`, `sha1`, `tag`, `status`, `build-id`)"
+	$sql = " INSERT INTO `BUILD_list` (`time`, `id-group`, `sha1`, `tag`, `status`, `stage`)"
 	      ." VALUES ('".time()."',"
 	      ."         '".$idGroup."',"
 	      ."         '".$_POST['SHA1']."',"
 	      ."         '".$_POST['TAG']."',"
 	      ."         '".$_POST['STATUS']."',"
-	      ."         '".$_POST['ID']."')";
+	      ."         '".$_POST['STAGE']."')";
 	//echo $sql;
 	$result = $COVERAGE_bdd->query($sql);
 	if ($result == FALSE) {
 		echo("[ERROR] Can not register in db ... (LIST)");
 	}
-	$sql = "SELECT   `BUILD_snapshot`.`id` "
+	$sql = "SELECT     `BUILD_snapshot`.`id` "
+	       ."      AND `BUILD_snapshot`.`json` "
 	       ." FROM   `BUILD_snapshot`"
 	       ."      , `CI_group`"
 	       ." WHERE     `CI_group`.`user-name` = '".$userName."'"
@@ -108,10 +109,10 @@ if ($idGroup <= -1) {
 	if (    $result == NULL
 	     || $result->num_rows == 0) {
 		// simply insert:
-		$sql = " INSERT INTO `BUILD_snapshot` (`id-build`, `id-group`, `".$_POST['TAG']."`)"
+		$sql = " INSERT INTO `BUILD_snapshot` (`id-build`, `id-group`, `json`)"
 		      ." VALUES ('".$_POST['ID']."',"
 		      ."         '".$idGroup."',"
-		      ."         '".$_POST['STATUS']."')";
+		      ."         '{\"".$_POST['TAG']."\":\"".$_POST['STATUS']."\"')";
 		$result = $COVERAGE_bdd->query($sql);
 		if ($result == TRUE) {
 			echo("[OK] registered done (new entry)");
@@ -119,9 +120,19 @@ if ($idGroup <= -1) {
 			echo("[ERROR] Can not register in db ... (snapshot 1)");
 		}
 	} else {
+		// update the entry:
+		if (    $result->num_rows == 1) {
+			$row = $result->fetch_assoc();
+			$jsonRaw = $row["json"];
+		} else {
+			die ("error occured ...");
+		}
+		$data = json_decode($jsonRaw);
+		$data[$_POST['TAG']] = $_POST['STATUS'];
+		$jsonRaw = json_encode($data)
 		// try to update the curent values:
 		$sql = " UPDATE `BUILD_snapshot`"
-		      ." SET   `BUILD_snapshot`.`".$_POST['TAG']."` = '".$_POST['STATUS']."'"
+		      ." SET   `BUILD_snapshot`.`json` = '".$jsonRaw."'"
 		      ." WHERE `BUILD_snapshot`.`id-group` = '".$idGroup."'";
 		$result = $COVERAGE_bdd->query($sql);
 		if ($result == TRUE) {

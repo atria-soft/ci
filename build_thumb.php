@@ -77,12 +77,14 @@ if ($result->num_rows > 0) {
 		errorSVG("To much value");
 	}
 	$row = $result->fetch_assoc();
-	$status = $row[$tag];
+	$jsonRaw = $row["json"];
 } else {
-	$status = "---";
+	$jsonRaw = "{}";
 	//errorSVG("No Value");
 }
 
+$data = json_decode($jsonRaw);
+$status = $data[$tag];
 
 //some coverage value :
 if ($status == "UNKNOW") {

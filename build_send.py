@@ -26,6 +26,8 @@ parser.add_argument("-t", "--tag",    help="Tag to register the system 'Linux', 
                                       default="")
 parser.add_argument("-S", "--status", help="Build status 'START', 'OK', 'ERROR' or $?",
                                       default="")
+parser.add_argument("-G", "--stage",  help="Stage of the BUILD: 'INIT', 'DOWNLOAD', 'CONFIGURE', 'BUILD', 'INSTALL', 'TEST', 'COVERAGE' or 'PACKAGE'",
+                                      default="")
 parser.add_argument("-i", "--id",     help="build ID (auto get env variable TRAVIS_BUILD_NUMBER)",
                                       default="")
 ###################
@@ -35,12 +37,16 @@ parser.add_argument("--test",         help="test value (local server ...)",
                                       action="store_true")
 args = parser.parse_args()
 
+
 if args.status not in ['START', 'OK', 'ERROR']:
 	#print("ploppp : '" + str(args.status) + "'")
 	if args.status == "0":
 		args.status = 'OK'
 	else:
 		args.status = 'ERROR'
+
+if args.stage not in ['INIT', 'DOWNLOAD', 'CONFIGURE', 'BUILD', 'INSTALL', 'TEST', 'COVERAGE', 'PACKAGE']:
+	args.stage = 'NONE'
 
 if args.test == True:
 	args.url = 'http://atria-soft.com/ci/build/inject'
@@ -49,6 +55,7 @@ if args.test == True:
 	args.branch = 'master'
 	args.tag = 'Windows'
 	args.status = 'START'
+	args.stage = 'NONE'
 else:
 	if     len(args.tag) >= len("build:") \
 	   and args.tag[:6] == "build:":
@@ -59,6 +66,7 @@ else:
 			print("[NOTE] build error, stop CI ...")
 			exit(-3)
 		exit(0)
+	
 	if args.tag == "linux":
 		args.tag = 'Linux';
 	if args.tag == "windows":
@@ -69,6 +77,9 @@ else:
 	if args.tag not in list_tag:
 		print("[ERROR] (local) set '--tag' parameter: " + str(list_tag))
 		exit(-2)
+	
+	# no more limit in build type name ==> TODO: add regex to filter on string only
+	
 	if args.status == "":
 		print("[ERROR] (local) set '--status' parameter")
 		exit(-2)
@@ -110,13 +121,15 @@ print("    branch = " + args.branch)
 print("    tag = " + args.tag)
 print("    status = " + args.status)
 print("    build id = " + args.id)
+print("    STAGE = " + args.stage)
 
 data = urllib.urlencode({'REPO':args.repo,
                          'SHA1':args.sha1,
                          'LIB_BRANCH':args.branch,
                          'TAG':args.tag,
                          'STATUS':args.status,
-                         'ID':args.id})
+                         'ID':args.id,
+                         'STAGE':args.stage})
 # I do this because my server is sometime down and need time to restart (return 408)
 send_done = 5
 while send_done >= 0:
@@ -138,7 +151,7 @@ if return_data[:7] == "[ERROR]":
 	exit(-1)
 
 if args.status == 'ERROR':
-	print("[NOTE] build error, stop travis ...")
+	print("[NOTE] build error, stop travis/GITLAB-CI ...")
 	exit(-3)
 
 exit(0)
