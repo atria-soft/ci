@@ -75,7 +75,7 @@ else:
 		args.tag = 'MacOs';
 	list_tag = ['Linux', 'MacOs', 'Windows', 'IOs', 'Android', 'Mingw']
 	if args.tag not in list_tag:
-		print("[ERROR] (local) set '--tag' parameter: " + str(list_tag))
+		print("[ERROR] (local) set '--tag=" + args.tag + "' parameter not in list: " + str(list_tag))
 		exit(-2)
 	
 	# no more limit in build type name ==> TODO: add regex to filter on string only
